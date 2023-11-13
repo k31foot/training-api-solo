@@ -4,12 +4,21 @@
   "description": "Training for creating api",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha spec && yarn lint",
+    "dev": "nodemon ./src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "chai-http": "^4.4.0",
+    "eslint": "^8.53.0",
+    "husky": "^8.0.3",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.1"
   }
 }
