@@ -8,6 +8,10 @@ const setupExpressServer = () => {
   const app = express();
   app.use(express.json());
 
+  app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+  });
+
   app.get("/status", function (req, res) {
     res.status(200).json({ status: "200" });
   });

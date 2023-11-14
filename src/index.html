@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prefecture database</title>
+  <style type="text/css">
+    div.upper {
+      width: 1000px
+    }
+    div.downer {
+      width: 1000px
+
+    }
+    div.textbox1 {
+      float: left;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #333333;
+    }
+    div.textbox {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #333333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Prefecture Database</h1>
+  <div class="upper">
+    <div class="textbox">
+      <h3>Search Prefecture</h3>
+      <input type="text" id="search" />
+      <button type="submit" onclick="searchPref()">Submit</button>
+      <dt>検索結果</dt>
+      <table id="searchResult" border="5"></table>
+    </div>
+    <div class="textbox">
+      <h3>Add Prefecture</h3>
+      <label for="addId">id</label>
+      <input type="text" id="addId" /><br>
+      <label for="addRegion">地域</label>
+      <input type="text" id="addRegion" /><br>
+      <label for="addPrefec">都道府県名</label>
+      <input type="text" id="addPrefec" /><br>
+      <label for="addCity">県庁所在地</label>
+      <input type="text" id="addCity" /><br>
+      <label for="addPopulation">人口</label>
+      <input type="text" id="addPopulation" /><br>
+      <label for="addDensity">人口密度(人/km^2)</label>
+      <input type="text" id="addDensity" /><br>
+      <label for="addArea">面積(km^2)</label>
+      <input type="text" id="addArea" /><br>
+      <label for="addUrl">ホームページURL</label>
+      <input type="text" id="addUrl" /><br>
+      <button type="submit" onclick="addPref()">Submit</button>
+      <ul id="addResult"></ul>
+    </div>
+    <div class="textbox">
+      <h3>Edit Prefecture</h3>
+      <label for="editId">id</label>
+      <input type="text" id="editId" /><br>
+      <label for="editRegion">地域</label>
+      <input type="text" id="editRegion" /><br>
+      <label for="editPrefec">都道府県名</label>
+      <input type="text" id="editPrefec" /><br>
+      <label for="editCity">県庁所在地</label>
+      <input type="text" id="editCity" /><br>
+      <label for="editPopulation">人口</label>
+      <input type="text" id="editPopulation" /><br>
+      <label for="editDensity">人口密度(人/km^2)</label>
+      <input type="text" id="editDensity" /><br>
+      <label for="editArea">面積(km^2)</label>
+      <input type="text" id="editArea" /><br>
+      <label for="editUrl">ホームページURL</label>
+      <input type="text" id="editUrl" /><br>
+      <button type="submit" onclick="editPref()">Submit</button>
+      <ul id="editResult"></ul>
+    </div>
+    <div class="textbox">
+      <h3>Delete Prefecture</h3>
+      <input type="text" id="delete" />
+      <button type="submit" onclick="deletePref()">Submit</button>
+      <ul id="deleteResult"></ul>
+    </div>
+  </div>
+
+  <div class="downer">
+    <button type="submit" onclick="showPref()">リストの表示または更新</button>
+    <table id="Prefecture" border="5"></table>
+  </div>
+
+
+  <script>
+    function showPref(){
+    fetch('http://localhost:3000/prefectureList')
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        for(let i=0; i< res.length;i++){
+          const tr = document.createElement('tr');
+          const th1 = document.createElement('th');
+          const th2 = document.createElement('th');
+          const th3 = document.createElement('th');
+          const th4 = document.createElement('th');
+          const th5 = document.createElement('th');
+          const th6 = document.createElement('th');
+          const th7 = document.createElement('th');
+          const th8 = document.createElement('th');
+          const table = document.getElementById('Prefecture');
+          if (i == 0) {
+            table.innerText = '';
+            const tr1 = document.createElement('tr');
+            const th11 = document.createElement('th');
+            const th12 = document.createElement('th');
+            const th13 = document.createElement('th');
+            const th14 = document.createElement('th');
+            const th15 = document.createElement('th');
+            const th16 = document.createElement('th');
+            const th17 = document.createElement('th');
+            const th18 = document.createElement('th');
+            th11.innerText = 'id';
+            th12.innerText = 'region';
+            th13.innerText = 'prefec';
+            th14.innerText = 'city';
+            th15.innerText = 'population';
+            th16.innerText = 'density';
+            th17.innerText = 'area';
+            th18.innerText = 'homepage';
+            tr1.appendChild(th11);
+            tr1.appendChild(th12);
+            tr1.appendChild(th13);
+            tr1.appendChild(th14);
+            tr1.appendChild(th15);
+            tr1.appendChild(th16);
+            tr1.appendChild(th17);
+            tr1.appendChild(th18);
+            table.appendChild(tr1);
+          };
+          th1.innerText = res[i].id;
+          th2.innerText = res[i].region;
+          th3.innerText = res[i].prefec;
+          th4.innerText = res[i].city;
+          th5.innerText = res[i].population;
+          th6.innerText = res[i].density;
+          th7.innerText = res[i].area;
+          th8.innerText = res[i].homepage;
+          tr.appendChild(th1);
+          tr.appendChild(th2);
+          tr.appendChild(th3);
+          tr.appendChild(th4);
+          tr.appendChild(th5);
+          tr.appendChild(th6);
+          tr.appendChild(th7);
+          tr.appendChild(th8);
+          table.appendChild(tr);
+        };
+      });
+    };
+
+    function searchPref() {
+      const input = document.getElementById('search');
+      const url = 'http://localhost:3000/prefectureList/' + input.value;
+      fetch(url, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          const tr = document.createElement('tr');
+          const th1 = document.createElement('th');
+          const th2 = document.createElement('th');
+          const th3 = document.createElement('th');
+          const th4 = document.createElement('th');
+          const th5 = document.createElement('th');
+          const th6 = document.createElement('th');
+          const th7 = document.createElement('th');
+          const th8 = document.createElement('th');
+          th1.innerText = res[0].id;
+          th2.innerText = res[0].region;
+          th3.innerText = res[0].prefec;
+          th4.innerText = res[0].city;
+          th5.innerText = res[0].population;
+          th6.innerText = res[0].density;
+          th7.innerText = res[0].area;
+          th8.innerText = res[0].homepage;
+          tr.appendChild(th1);
+          tr.appendChild(th2);
+          tr.appendChild(th3);
+          tr.appendChild(th4);
+          tr.appendChild(th5);
+          tr.appendChild(th6);
+          tr.appendChild(th7);
+          tr.appendChild(th8);
+          const table = document.getElementById('searchResult');
+          table.innerText = '';
+          table.appendChild(tr);
+        });
+      input.value = '';
+    }
+
+    function addPref() {
+      const inputId = document.getElementById('addId');
+      const inputRegion = document.getElementById('addRegion');
+      const inputPrefec = document.getElementById('addPrefec');
+      const inputCity = document.getElementById('addCity');
+      const inputPopulation = document.getElementById('addPopulation');
+      const inputDensity = document.getElementById('addDensity');
+      const inputArea = document.getElementById('addArea');
+      const inputUrl = document.getElementById('addUrl');
+      fetch('http://localhost:3000/add/prefecture', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({id: inputId.value,
+                              region: inputRegion.value,
+                              prefec: inputPrefec.value,
+                              city: inputCity.value,
+                              population: inputPopulation.value,
+                              density: inputDensity.value,
+                              area: inputArea.value,
+                              homepage: inputUrl.value}),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          const tx = document.createElement('dt');
+          tx.innerText = '追加結果'
+          const li = document.createElement('li');
+          if(res.status == '200'){
+            li.innerText = 'Successful!';
+          }else{
+            li.innerText = 'Failure...';
+          }
+          const ul = document.getElementById('addResult');
+          ul.innerText = '';
+          ul.appendChild(tx);
+          ul.appendChild(li);
+        });
+    }
+
+    function editPref() {
+      const inputId = document.getElementById('editId');
+      const inputRegion = document.getElementById('editRegion');
+      const inputPrefec = document.getElementById('editPrefec');
+      const inputCity = document.getElementById('editCity');
+      const inputPopulation = document.getElementById('editPopulation');
+      const inputDensity = document.getElementById('editDensity');
+      const inputArea = document.getElementById('editArea');
+      const inputUrl = document.getElementById('editUrl');
+      fetch('http://localhost:3000/edit/prefecture', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: inputId.value,
+          region: inputRegion.value,
+          prefec: inputPrefec.value,
+          city: inputCity.value,
+          population: inputPopulation.value,
+          density: inputDensity.value,
+          area: inputArea.value,
+          homepage: inputUrl.value
+        }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          const tx = document.createElement('dt');
+          tx.innerText = '変更結果'
+          const li = document.createElement('li');
+          if (res.status == '200') {
+            li.innerText = 'Successful!';
+          } else {
+            li.innerText = 'Failure...';
+          }
+          const ul = document.getElementById('editResult');
+          ul.innerText = '';
+          ul.appendChild(tx);
+          ul.appendChild(li);
+        });
+    }
+    function deletePref() {
+      const input = document.getElementById('delete');
+      const url = 'http://localhost:3000/delete/prefecture/' + input.value;
+      fetch(url, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          const tx = document.createElement('dt');
+          tx.innerText = '削除結果'
+          const li = document.createElement('li');
+          if (res.status == '200') {
+            li.innerText = 'Successful!';
+          } else {
+            li.innerText = 'Failure...';
+          }
+          const ul = document.getElementById('deleteResult');
+          ul.innerText = '';
+          ul.appendChild(tx);
+          ul.appendChild(li);
+        });
+      input.value = '';
+    }
+  </script>
+</body>
+</html>
